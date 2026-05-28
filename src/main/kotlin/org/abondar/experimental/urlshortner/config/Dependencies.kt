@@ -3,6 +3,8 @@ package org.abondar.experimental.urlshortner.config
 import com.datastax.oss.driver.api.core.CqlSession
 import io.ktor.client.*
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.*
 import org.abondar.experimental.urlshortner.dao.UrlMappingDAO
 import org.abondar.experimental.urlshortner.service.UrlShortenerService
@@ -36,7 +38,11 @@ fun Application.configureDI() {
         }
 
         bind<HttpClient>() with singleton {
-            HttpClient(CIO)
+            HttpClient(CIO) {
+                install(ContentNegotiation) {
+                    jackson()
+                }
+            }
         }
 
         bind<SnowflakeIdGenerator>() with singleton {
