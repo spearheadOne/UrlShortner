@@ -1,4 +1,4 @@
-# Url Shortener
+./# Url Shortener
 
 Tiny service to make a short url from incoming one. Shortened URL can be used for redirect to original one.
 

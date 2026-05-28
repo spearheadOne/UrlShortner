@@ -1,6 +1,6 @@
 package org.abondar.experimental.urlshortner.service
 
-import com.github.benmanes.caffeine.cache.Cache
+import com.datastax.oss.driver.api.core.CqlSession
 import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -19,7 +19,7 @@ import redis.clients.jedis.Jedis
 class UrlShortenerServiceTest {
 
     private lateinit var redisClient: Jedis
-    private lateinit var cache: Cache<String, String>
+    private lateinit var cassandraSession: CqlSession
     private lateinit var urlMappingDAO: UrlMappingDAO
     private lateinit var kodein: DI
     private lateinit var urlShortenerService: UrlShortenerService
@@ -28,14 +28,14 @@ class UrlShortenerServiceTest {
     @BeforeEach
     fun setup() {
         redisClient = mockk(relaxed = true)
-        cache = mockk(relaxed = true)
+        cassandraSession = mockk(relaxed = true)
         urlMappingDAO = mockk(relaxed = true)
 
         kodein = DI {
             bind<Jedis>() with singleton { redisClient }
-            bind<Cache<String, String>>() with singleton { cache }
+            bind<CqlSession>() with singleton { cassandraSession }
             bind<UrlMappingDAO>() with singleton { urlMappingDAO }
-            bind<UrlShortenerService>() with singleton { UrlShortenerService(instance()) }
+            bind<UrlShortenerService>() with singleton { UrlShortenerService(instance(), 100) }
         }
 
 
@@ -45,7 +45,7 @@ class UrlShortenerServiceTest {
 
     @AfterEach
     fun tearDown() {
-        clearMocks(redisClient, cache, urlMappingDAO)
+        clearMocks(redisClient, urlMappingDAO)
     }
 
     @Test

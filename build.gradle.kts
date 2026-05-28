@@ -2,11 +2,11 @@ val kotlin_version: String by project
 val logback_version: String by project
 val swagger_version: String by project
 val jedis_version: String by project
-val caffeine_version: String by project
 val kodein_version: String by project
 val junit_version: String by project
 val mockk_version: String by project
 val testcontainers_version: String by project
+val cassandra_version: String by project
 
 plugins {
     kotlin("jvm") version "2.0.0"
@@ -35,16 +35,18 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation-jvm")
     implementation("io.ktor:ktor-serialization-jackson-jvm")
     implementation("io.ktor:ktor-server-status-pages-jvm")
-    implementation("io.ktor:ktor-server-config-yaml-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
+    implementation("io.ktor:ktor-server-config-yaml-jvm")
     implementation("io.ktor:ktor-server-cors")
 
     implementation("io.github.smiley4:ktor-swagger-ui:$swagger_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("org.kodein.di:kodein-di-framework-ktor-server-jvm:$kodein_version")
 
-    implementation("com.github.ben-manes.caffeine:caffeine:$caffeine_version")
     implementation("redis.clients:jedis:$jedis_version")
+
+    implementation("com.datastax.oss:java-driver-core:$cassandra_version")
+    implementation("com.datastax.oss:java-driver-query-builder:$cassandra_version")
 
 
     testImplementation("io.ktor:ktor-server-tests-jvm")

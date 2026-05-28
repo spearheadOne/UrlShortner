@@ -2,12 +2,14 @@ package org.abondar.experimental.urlshortner.service
 
 import org.abondar.experimental.urlshortner.exception.UrlRequestException
 import org.abondar.experimental.urlshortner.dao.UrlMappingDAO
+import org.abondar.experimental.urlshortner.model.UrlMapping
 import org.slf4j.LoggerFactory
+import java.time.Instant
 
 import java.util.*
 import kotlin.math.abs
 
-class UrlShortenerService(private val dao: UrlMappingDAO)  {
+class UrlShortenerService(private val dao: UrlMappingDAO, private val defaultTTL: Long)  {
 
     private val logger = LoggerFactory.getLogger(UrlShortenerService::class.java)
 
@@ -19,7 +21,16 @@ class UrlShortenerService(private val dao: UrlMappingDAO)  {
         }
 
         val shortUrl = encodeUrl()
-        dao.save(longUrl, shortUrl)
+
+        val now = Instant.now()
+        val mapping = UrlMapping(
+            shortUrl,
+            longUrl,
+            now,
+            now.plusSeconds(defaultTTL),
+        )
+
+        dao.save(mapping,ttlSeconds = defaultTTL)
 
         logger.info("Shortened URL: $longUrl to $shortUrl")
 

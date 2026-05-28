@@ -1,11 +1,18 @@
 ktor:
+  deployment:
+    port: 8080
   application:
     modules:
       - org.abondar.experimental.urlshortner.ApplicationKt.module
-  deployment:
-    port: 8080
 
   redis:
-    url: "redisL://localhost:6379"
+    url: "redis://localhost:6379"
     db: 0
     password: ""
+
+  cassandra:
+    contactPoints: "localhost:9042"
+    localDatacenter: "datacenter1"
+
+  urlshortner:
+    defaultTtlSeconds: 86400

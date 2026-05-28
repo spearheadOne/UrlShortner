@@ -1,26 +1,29 @@
-version: '3.8'
-
 services:
   redis:
-    image: redis:6.2.6
+    image: redis:8.4.0
     container_name: urlshortener-redis
+    ports:
+      - "6379:6379"
     networks:
       - urlshortener-net
 
-  app:
-    image: abondar/urlshortner:1.0
-    container_name: urlshortener
-    restart: on-failure
-    environment:
-      REDIS_URL: redis://redis:6379
-      REDIS_DB: 0
-      REDIS_PASS: ""
+  cassandra:
+    image: cassandra:5.0
+    container_name: urlshortener-cassandra
     ports:
-      - "8080:8080"
-    depends_on:
-      - redis
+      - "9042:9042"
+    environment:
+      CASSANDRA_CLUSTER_NAME: urlshortener-cluster
+      CASSANDRA_DC: datacenter1
+      CASSANDRA_RACK: rack1
+      CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+    volumes:
+      - cassandra-data:/var/lib/cassandra
     networks:
       - urlshortener-net
+
+volumes:
+  cassandra-data:
 
 networks:
   urlshortener-net:

@@ -6,6 +6,13 @@ ktor:
     port: 8080
 
   redis:
-    url: $REDIS_URL
-    db: $REDIS_DB
-    password: $REDIS_PASS
+    url: "$REDIS_URL"
+    db: "$REDIS_DB"
+    password: "$REDIS_PASS"
+
+  cassandra:
+    contactPoints: "$CASSANDRA_CONTACT_POINTS"
+    localDatacenter: "$CASSANDRA_DATACENTER"
+
+  urlshortner:
+    defaultTtlSeconds: 86400
