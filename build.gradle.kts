@@ -38,6 +38,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm")
     implementation("io.ktor:ktor-server-config-yaml-jvm")
     implementation("io.ktor:ktor-server-cors")
+    implementation("io.ktor:ktor-client-cio-jvm:")
 
     implementation("io.github.smiley4:ktor-swagger-ui:$swagger_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")

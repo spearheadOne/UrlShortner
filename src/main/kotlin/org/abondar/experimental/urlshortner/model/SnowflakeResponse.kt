@@ -2,7 +2,7 @@ package org.abondar.experimental.urlshortner.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class ShortenResponse(
-    @param:JsonProperty(value = "short_url")
-    val url: String
+data class SnowflakeResponse(
+    @field:JsonProperty(value = "snowflake_id")
+    val snowflakeId: Long
 )

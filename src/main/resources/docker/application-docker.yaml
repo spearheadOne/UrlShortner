@@ -16,3 +16,6 @@ ktor:
 
   urlshortner:
     defaultTtlSeconds: 86400
+    snowflake:
+      retryCount: 5
+      url: "$SNOWFLAKE_HOST/snowflake"

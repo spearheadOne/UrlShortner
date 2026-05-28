@@ -1,6 +1,5 @@
 package org.abondar.experimental.urlshortner.config
 
-import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.server.application.Application

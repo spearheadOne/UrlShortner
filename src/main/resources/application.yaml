@@ -16,3 +16,6 @@ ktor:
 
   urlshortner:
     defaultTtlSeconds: 86400
+    snowflake:
+      retryCount: 3
+      url: "http://localhost:8081/snowflake"
