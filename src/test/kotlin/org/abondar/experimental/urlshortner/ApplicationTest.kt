@@ -46,7 +46,7 @@ class ApplicationTest {
     @Test
     fun `test shorten endpoint`() = testApplication {
         application {
-            configureRouting()
+            configureApiRouting()
             configureSerialization()
             configureDI()
         }
@@ -89,7 +89,7 @@ class ApplicationTest {
     @Test
     fun `test shorten endpoint with empty url`() = testApplication {
         application {
-            configureRouting()
+            configureApiRouting()
             configureSerialization()
             configureDI()
             configureStatusPages()
@@ -132,7 +132,7 @@ class ApplicationTest {
     @Test
     fun `test redirect endpoint with non existing url`() = testApplication {
         application {
-            configureRouting()
+            configureApiRouting()
             configureSerialization()
             configureDI()
             configureStatusPages()

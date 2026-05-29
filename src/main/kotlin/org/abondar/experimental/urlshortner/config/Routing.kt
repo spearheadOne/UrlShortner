@@ -14,7 +14,7 @@ import org.kodein.di.instance
 import org.kodein.di.ktor.closestDI
 
 
-fun Application.configureRouting() {
+fun Application.configureApiRouting() {
 
     val urlShortenerService by closestDI().instance<UrlShortenerService>()
 

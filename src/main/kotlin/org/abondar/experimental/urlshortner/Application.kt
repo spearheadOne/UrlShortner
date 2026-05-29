@@ -11,9 +11,10 @@ fun Application.module() {
     configureSwagger()
     configureMonitoring()
     configureSerialization()
-    configureRouting()
+    configureApiRouting()
     configureDI()
     configureStatusPages()
     configureCors()
+    configureMetrics()
 }
 

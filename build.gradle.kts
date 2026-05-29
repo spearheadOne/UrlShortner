@@ -7,6 +7,7 @@ val junitVersion: String by project
 val mockkVersion: String by project
 val testcontainersVersion: String by project
 val cassandraVersion: String by project
+val prometheusVersion: String by project
 
 plugins {
     kotlin("jvm") version "2.3.21"
@@ -65,6 +66,9 @@ dependencies {
     implementation("com.datastax.oss:java-driver-query-builder:$cassandraVersion")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json")
+
+    implementation("io.ktor:ktor-server-metrics-micrometer")
+    implementation("io.micrometer:micrometer-registry-prometheus:$prometheusVersion")
 
     testImplementation("io.ktor:ktor-server-test-host")
     testImplementation("io.mockk:mockk:$mockkVersion")
