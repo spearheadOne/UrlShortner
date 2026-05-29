@@ -5,6 +5,7 @@ import com.datastax.oss.driver.api.core.cql.Row
 import org.abondar.experimental.urlshortner.exception.UrlNotFoundException
 import org.abondar.experimental.urlshortner.model.UrlMapping
 import redis.clients.jedis.Jedis
+import redis.clients.jedis.params.SetParams
 import java.time.Instant
 
 class UrlMappingDAO(private val redisClient: Jedis, private val cassandraSession: CqlSession) {
@@ -22,7 +23,10 @@ class UrlMappingDAO(private val redisClient: Jedis, private val cassandraSession
         )
 
 
-        redisClient.setex(mapping.shortCode, ttlSeconds, mapping.longUrl)
+        redisClient.set(
+            mapping.shortCode, mapping.longUrl,
+            SetParams().ex(ttlSeconds)
+        )
     }
 
     fun findLongUrl(shortUrl: String): String {
@@ -43,7 +47,10 @@ class UrlMappingDAO(private val redisClient: Jedis, private val cassandraSession
         val ttlSeconds = mapping.expiresAt.epochSecond.minus(Instant.now().epochSecond)
 
         if (ttlSeconds > 0) {
-            redisClient.setex(shortUrl, ttlSeconds, mapping.longUrl)
+            redisClient.set(
+                shortUrl, mapping.longUrl,
+                SetParams().ex(ttlSeconds)
+            )
         }
 
         return mapping.longUrl

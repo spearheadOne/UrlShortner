@@ -1,16 +1,17 @@
-val kotlin_version: String by project
-val logback_version: String by project
-val swagger_version: String by project
-val jedis_version: String by project
-val kodein_version: String by project
-val junit_version: String by project
-val mockk_version: String by project
-val testcontainers_version: String by project
-val cassandra_version: String by project
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+val logbackVersion: String by project
+val jedisVersion: String by project
+val kodeinVersion: String by project
+val junitVersion: String by project
+val mockkVersion: String by project
+val testcontainersVersion: String by project
+val cassandraVersion: String by project
 
 plugins {
-    kotlin("jvm") version "2.0.0"
-    id("io.ktor.plugin") version "2.3.12"
+    kotlin("jvm") version "2.3.21"
+    kotlin("plugin.serialization") version "2.3.21"
+    id("io.ktor.plugin") version "3.5.0"
     id("com.google.cloud.tools.jib") version "3.4.3"
 }
 
@@ -24,44 +25,65 @@ application {
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_21)
+    }
+}
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-core-jvm")
-    implementation("io.ktor:ktor-server-call-logging-jvm")
-    implementation("io.ktor:ktor-server-content-negotiation-jvm")
-    implementation("io.ktor:ktor-client-content-negotiation-jvm")
-    implementation("io.ktor:ktor-serialization-jackson-jvm")
-    implementation("io.ktor:ktor-server-status-pages-jvm")
-    implementation("io.ktor:ktor-server-netty-jvm")
-    implementation("io.ktor:ktor-server-config-yaml-jvm")
+    implementation("io.ktor:ktor-server-core")
+    implementation("io.ktor:ktor-server-call-logging")
+    implementation("io.ktor:ktor-server-content-negotiation")
+    implementation("io.ktor:ktor-client-content-negotiation")
+    implementation("io.ktor:ktor-serialization-jackson")
+    implementation("io.ktor:ktor-server-status-pages")
+    implementation("io.ktor:ktor-server-netty")
+    implementation("io.ktor:ktor-server-config-yaml")
     implementation("io.ktor:ktor-server-cors")
-    implementation("io.ktor:ktor-client-cio-jvm:")
-
-    implementation("io.github.smiley4:ktor-swagger-ui:$swagger_version")
-    implementation("ch.qos.logback:logback-classic:$logback_version")
-    implementation("org.kodein.di:kodein-di-framework-ktor-server-jvm:$kodein_version")
-
-    implementation("redis.clients:jedis:$jedis_version")
-
-    implementation("com.datastax.oss:java-driver-core:$cassandra_version")
-    implementation("com.datastax.oss:java-driver-query-builder:$cassandra_version")
+    implementation("io.ktor:ktor-client-cio")
+    implementation("io.ktor:ktor-server-swagger")
+    implementation("io.ktor:ktor-server-routing-openapi")
 
 
-    testImplementation("io.ktor:ktor-server-tests-jvm")
-    testImplementation("io.mockk:mockk:$mockk_version")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("org.kodein.di:kodein-di-framework-ktor-server-jvm:$kodeinVersion")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junit_version")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit_version")
+    implementation("redis.clients:jedis:$jedisVersion")
 
-    testImplementation("org.testcontainers:testcontainers:$testcontainers_version")
-    testImplementation("org.testcontainers:junit-jupiter:$testcontainers_version")
+    implementation("com.datastax.oss:java-driver-core:$cassandraVersion")
+    implementation("com.datastax.oss:java-driver-query-builder:$cassandraVersion")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json")
+
+    testImplementation("io.ktor:ktor-server-test-host")
+    testImplementation("io.mockk:mockk:$mockkVersion")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
+    testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
     testImplementation("com.redis:testcontainers-redis:2.2.2")
 
 }
 
+tasks.test{
+    useJUnitPlatform {
+        exclude("**/ApplicationTest.class")
+    }
+}
 
 tasks {
     register<Test>("integrationTest") {
@@ -69,14 +91,17 @@ tasks {
             include("**/ApplicationTest.class")
         }
     }
+}
 
-    named<Test>("test") {
-        useJUnitPlatform {
-            exclude("**/ApplicationTest.class")
-        }
-
+ktor {
+    openApi {
+        enabled = true
+        codeInferenceEnabled = true
+        onlyCommented = false
     }
 }
+
+
 var registry = System.getenv("DOCKER_REGISTRY")
 
 jib {

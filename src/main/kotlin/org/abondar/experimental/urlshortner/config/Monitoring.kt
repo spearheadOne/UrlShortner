@@ -1,7 +1,8 @@
 package org.abondar.experimental.urlshortner.config
 
 import io.ktor.server.application.*
-import io.ktor.server.plugins.callloging.*
+import io.ktor.server.plugins.calllogging.CallLogging
+
 import io.ktor.server.request.*
 import org.slf4j.event.*
 

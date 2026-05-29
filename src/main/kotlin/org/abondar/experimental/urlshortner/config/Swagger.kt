@@ -1,23 +1,14 @@
 package org.abondar.experimental.urlshortner.config
 
-import io.github.smiley4.ktorswaggerui.SwaggerUI
+import io.ktor.openapi.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.swagger.*
+import io.ktor.server.routing.*
 
 fun Application.configureSwagger() {
-    install(SwaggerUI) {
-        swagger {
-            swaggerUrl = "swagger-ui"
-            forwardRoot = true
+    routing {
+        swaggerUI(path = "/swaggerUI") {
+            info = OpenApiInfo("Shortener API", "1.0.0", "Tiny url shortener")
         }
-        info {
-            title = "URL shortener API"
-            version = "latest"
-            description = "API for creating short urls and redirecting via them to original ones"
-        }
-        server {
-            url = "http://localhost:8080"
-            description = "Development Server"
-        }
-
     }
 }
